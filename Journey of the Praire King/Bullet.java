@@ -5,8 +5,8 @@ public class Bullet {
     public static final int UP_DIRECTION = -1;
     public static final int DOWN_DIRECTION = 1;
 
-    private final int BULLET_SIZE = 10;
-    private final int SHIFT = 2;
+    private final int BULLET_SIZE = 15;
+    private final int SHIFT = 15;
 
     private Board board;
 
@@ -38,20 +38,20 @@ public class Bullet {
 
     private void checkBoundries() {
         if (yCor <= 0 || yCor >= board.getHeight() - BULLET_SIZE) {
-            player.removeBullet(); 
+            player.removeBullet();
         }
 
-       if (getBounds().intersects(board.getPlayer(player.getPlayerNumber() - 1).getBounds())) {
+        if (getBounds().intersects(board.getPlayer(player.getPlayerNumber() - 1).getBounds())) {
             board.getPlayer(player.getPlayerNumber() - 1).lowerHealth();
             player.removeBullet();
-       }
+        }
 
-       for (Bullet i : board.getPlayer(player.getPlayerNumber() - 1).getBullets()) {
-           if (i.getBounds().intersects(getBounds())) {
-                board.getPlayer(player.getPlayerNumber() - 1).setBulletRemoved(i);
+        if (board.getPlayer(player.getPlayerNumber() - 1).getBullet() != null) {
+            if (getBounds().intersects(board.getPlayer(player.getPlayerNumber() - 1).getBullet().getBounds())) {
+                board.getPlayer(player.getPlayerNumber() - 1).removeBullet();
                 player.removeBullet();
-           }
-       }
+            }
+        }
     }
 
     public Rectangle getBounds() {

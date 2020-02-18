@@ -2,9 +2,6 @@ import javax.swing.*;
 
 import java.awt.*;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class Player {
 
     public static final int TOP_PLAYER = 0;
@@ -26,9 +23,7 @@ public class Player {
     Image scale;
     ImageIcon character;
 
-    private List<Bullet> bullets;
-    private boolean remove;
-    private Bullet bulletRemoved;
+    private Bullet bullet;
 
     private int health;
 
@@ -44,8 +39,6 @@ public class Player {
         } else {
             yCor = board.getHeight() - (HEIGHT + 50);
         }
-
-        bullets = new ArrayList<Bullet>();
 
         health = WIDTH;
 
@@ -68,8 +61,8 @@ public class Player {
 
         character.paintIcon(board, g, xCor, yCor);
 
-        for (Bullet i : bullets) {
-            i.draw(g);
+        if (bullet != null) {
+            bullet.draw(g);
         }
     }
 
@@ -81,55 +74,47 @@ public class Player {
         return playerNumber;
     }
 
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
-
     public void update() {
-        if (xCor + WIDTH < board.getWidth() && xCor > 0) {
+        if (xCor + WIDTH <= board.getWidth() && xCor >= 0) {
             xCor += shift;
-        } else if (xCor + WIDTH >= board.getWidth()) {
+        } else if (xCor + WIDTH > board.getWidth()) {
             xCor -= 1;
-        } else if (xCor <= 0) {
+        } else if (xCor < 0) {
             xCor += 1;
         }
 
-        for (Bullet i : bullets) {
-            i.update();
-            if (remove) {
-                bulletRemoved = i;
-                remove = false;
-            }
+        if (bullet != null) {
+            bullet.update();
         }
-
-        bullets.remove(bulletRemoved);
     }
 
     public void shoot() {
-        if (playerNumber == TOP_PLAYER) {
-            bullets.add(new Bullet(board, this, xCor + (WIDTH / 2), yCor + HEIGHT, Bullet.DOWN_DIRECTION));
-        }
+        if (bullet == null) {
+            if (playerNumber == TOP_PLAYER) {
+                bullet = new Bullet(board, this, xCor + (WIDTH / 2), yCor + HEIGHT, Bullet.DOWN_DIRECTION);
+            }
 
-        if (playerNumber == BOTTOM_PLAYER) {
-            bullets.add(new Bullet(board, this, xCor + (WIDTH / 2), yCor, Bullet.UP_DIRECTION));
+            if (playerNumber == BOTTOM_PLAYER) {
+                bullet = new Bullet(board, this, xCor + (WIDTH / 2), yCor, Bullet.UP_DIRECTION);
+            }
         }
     }
 
     public void removeBullet() {
-        remove = true;
+        bullet = null;
     }
 
-    public void setBulletRemoved(Bullet bullet) {
-        bulletRemoved = bullet;
+    public Bullet getBullet() {
+        return bullet;
     }
 
     public void lowerHealth() {
         health -= WIDTH / 10;
         if (health <= 0) {
-            
+
             health = WIDTH;
-            
-            bullets.clear();
+
+            bullet = null;
 
             if (playerNumber == TOP_PLAYER) {
                 board.playerTwoWins();
@@ -140,11 +125,11 @@ public class Player {
     }
 
     public void moveLeft() {
-        shift = -2;
+        shift = -4;
     }
 
     public void moveRight() {
-        shift = 2;
+        shift = 4;
     }
 
     public void stop() {

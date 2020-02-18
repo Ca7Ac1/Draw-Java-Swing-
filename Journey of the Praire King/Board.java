@@ -24,12 +24,41 @@ public class Board extends JPanel implements ActionListener {
         playerOne = new Player(this, Player.TOP_PLAYER);
         playerTwo = new Player(this, Player.BOTTOM_PLAYER);
 
-        addKeyListener(new KeyChecker(this));
+        bindKeys();
+        // addKeyListener(new KeyChecker(this));
         timer.start();
 
         setFocusable(true);
         setBackground(new Color(50, 50, 50));
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
+    }
+
+    private void bindKeys() {
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "Move Player One Left");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, true), "Stop Player One");
+
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "Move Player One Right");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "Stop Player One");
+
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_J, 0, false), "Move Player Two Left");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_J, 0, true), "Stop Player Two");
+
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0, false), "Move Player Two Right");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0, true), "Stop Player Two");
+
+        getInputMap().put(KeyStroke.getKeyStroke("E"), "Player One Shoot");
+        getInputMap().put(KeyStroke.getKeyStroke("U"), "Player Two Shoot");
+    
+        getActionMap().put("Move Player One Left", new MoveAction(0, playerOne));
+        getActionMap().put("Move Player One Right", new MoveAction(1, playerOne));
+        getActionMap().put("Stop Player One", new StopAction(playerOne));
+
+        getActionMap().put("Move Player Two Left", new MoveAction(0, playerTwo));
+        getActionMap().put("Move Player Two Right", new MoveAction(1, playerTwo));
+        getActionMap().put("Stop Player Two", new StopAction(playerTwo));
+        
+        getActionMap().put("Player One Shoot", new ShootAction(playerOne));
+        getActionMap().put("Player Two Shoot", new ShootAction(playerTwo));
     }
 
     @Override
